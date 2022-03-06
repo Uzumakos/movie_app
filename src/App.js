@@ -1,25 +1,59 @@
-import logo from './logo.svg';
+import React from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
+import SearchIcon from './search.svg';
+import MovieCard from './MovieCard';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const API_URL = 'http://www.omdbapi.com/?apikey=993e4965';
+
+const App = () => {
+    const [fim, setFim ] = useState([]);
+
+    const chacheFim = async (title) => {
+        const response = await fetch(`${API_URL}&s=${title}`)
+        const data = await response.json();
+
+        setFim(data.Search);
+    }
+
+    useEffect(() => {
+        chacheFim('Spiderman');
+    }, []);
+
+    return (
+        <div className="app">
+            <h1>Bon Fim</h1>
+
+            <div className="search">
+                <input 
+                    placeholder="Chache fim ou an"
+                    value="Avengers"
+                    onChange={() => {}}
+                />
+                <img 
+                    src={SearchIcon}
+                    alt="search"
+                    onClick={() => {}}
+                />
+            </div>
+
+            {
+                fim?.lenght > 0
+                    ? (
+                        <div className="container">
+                         <MovieCard movie1={fim[0]} />
+                        </div>
+                    ) : (
+                       <div className="empty">
+
+                       </div>
+                    ) 
+
+            }
+
+          
+        </div>
+    );
 }
 
 export default App;
