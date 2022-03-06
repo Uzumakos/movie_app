@@ -1,59 +1,56 @@
-import React from 'react';
-import { useEffect, useState } from 'react';
-import './App.css';
-import SearchIcon from './search.svg';
-import MovieCard from './MovieCard';
+import React, { useState, useEffect } from "react";
+
+import MovieCard from "./MovieCard";
+import SearchIcon from "./search.svg";
+import "./App.css";
 
 const API_URL = 'http://www.omdbapi.com/?apikey=993e4965';
 
 const App = () => {
-    const [fim, setFim ] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [fim, setMovies] = useState([]);
 
-    const chacheFim = async (title) => {
-        const response = await fetch(`${API_URL}&s=${title}`)
-        const data = await response.json();
+  useEffect(() => {
+    searchMovies("Batman");
+  }, []);
 
-        setFim(data.Search);
-    }
+  const searchMovies = async (title) => {
+    const response = await fetch(`${API_URL}&s=${title}`);
+    const data = await response.json();
 
-    useEffect(() => {
-        chacheFim('Spiderman');
-    }, []);
+    setMovies(data.Search);
+  };
 
-    return (
-        <div className="app">
-            <h1>Bon Fim</h1>
+  return (
+    <div className="app">
+      <h1>Bon Fim</h1>
 
-            <div className="search">
-                <input 
-                    placeholder="Chache fim ou an"
-                    value="Avengers"
-                    onChange={() => {}}
-                />
-                <img 
-                    src={SearchIcon}
-                    alt="search"
-                    onClick={() => {}}
-                />
-            </div>
+      <div className="search">
+        <input
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Chache Fim ou an"
+        />
+        <img
+          src={SearchIcon}
+          alt="search"
+          onClick={() => searchMovies(searchTerm)}
+        />
+      </div>
 
-            {
-                fim?.lenght > 0
-                    ? (
-                        <div className="container">
-                         <MovieCard movie1={fim[0]} />
-                        </div>
-                    ) : (
-                       <div className="empty">
-
-                       </div>
-                    ) 
-
-            }
-
-          
+      {fim?.length > 0 ? (
+        <div className="container">
+          {fim.map((movie) => (
+            <MovieCard movie={movie} />
+          ))}
         </div>
-    );
-}
+      ) : (
+        <div className="empty">
+          <h2>Pa gen fim</h2>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default App;
